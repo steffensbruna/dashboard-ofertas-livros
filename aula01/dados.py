@@ -44,6 +44,23 @@ def contar_cinco_estrelas(livros):
             contador += 1
     return contador
 
+def livro_mais_caro(livros):
+    titulo: str = ""
+    preco_mais_caro: float = 0.0
+    
+    for livro in livros:
+        preco_original: str = livro["preco"]
+        preco_original_limpo: float = float(preco_original.replace("£",""))
+        
+        if preco_original_limpo > preco_mais_caro:
+            preco_mais_caro = preco_original_limpo
+            titulo = livro["titulo"]
+
+    return titulo, preco_mais_caro
+
+
+
+
 
 def ler_livrosv2(caminho): #uma forma MUITO mais elegante de fazer a leitura do arquivo
     with open(caminho, "r", encoding="utf-8") as arquivo:
@@ -52,7 +69,7 @@ def ler_livrosv2(caminho): #uma forma MUITO mais elegante de fazer a leitura do 
 def ler_livrosv1(caminho):
     arquivo = None
     try:
-        arquivo = open(caminhos, "r", encoding="utf-8")
+        arquivo = open(caminho, "r", encoding="utf-8")
         print(arquivo.read())
     except FileNotFoundError:
         print("O arquivo livros.csv não foi encontrada")
