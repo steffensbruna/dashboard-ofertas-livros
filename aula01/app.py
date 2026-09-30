@@ -4,23 +4,27 @@
 import streamlit as st
 import dados
 
-st.set_page_config(layout="wide")
-st.title("📚 Dashboard de Livros")
-st.write("Se você está vendo esta página, o seu ambiente está pronto! 🎉")
+def main():
 
-catalogo = dados.ler_livrosv3()
+    st.set_page_config(layout="wide")
+    st.title("📚 Dashboard de Livros")
 
-col1, col2, col3, col4 = st.columns(4)
-qtd_livros = len(catalogo)
-col1.metric(label="Quantidade de Livros", value=qtd_livros)
+    catalogo = dados.ler_livrosv3()
 
-preco_medio = dados.calcular_preco_medio(catalogo)
-col2.metric(label="Preço Médio", value=f"£ {preco_medio:.2f}")
+    col1, col2, col3, col4 = st.columns(4)
+    qtd_livros = len(catalogo)
+    col1.metric(label="Quantidade de Livros", value=qtd_livros)
 
-qtd_cinco_estrelas = dados.contar_cinco_estrelas(catalogo)
-col3.metric(label="Livros com 5 estrelas", value=qtd_cinco_estrelas)
+    preco_medio = dados.calcular_preco_medio(catalogo)
+    col2.metric(label="Preço Médio", value=f"£ {preco_medio:.2f}")
 
-nome_livro, preco = dados.livro_mais_caro(catalogo)
-col4.metric("Livro Mais Caro",f"£ {preco}",nome_livro)
+    qtd_cinco_estrelas = dados.contar_cinco_estrelas(catalogo)
+    col3.metric(label="Livros com 5 estrelas", value=qtd_cinco_estrelas)
 
-st.dataframe(catalogo)
+    nome_livro, preco = dados.livro_mais_caro(catalogo)
+    col4.metric("Livro Mais Caro",f"£ {preco}",nome_livro, delta_arrow ="off")
+
+    st.dataframe(catalogo)
+
+if __name__ == "__main__":
+    main()
