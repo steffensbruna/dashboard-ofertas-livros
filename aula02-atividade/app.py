@@ -78,7 +78,7 @@ def main():
         st.warning("Livro não encontrado")
     else:
         st.caption(f"{len(livros_encontrados)} livros encontrados")
-        st.dataframe(livros_encontrados)
+        st.dataframe(montar_tabela(livros_encontrados))
 
 if __name__ == "__main__":
     main()
