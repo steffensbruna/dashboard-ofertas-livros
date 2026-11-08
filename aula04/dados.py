@@ -7,6 +7,8 @@ from pathlib import Path
 # mesmo quando é executado a partir de outra pasta (como no Streamlit Cloud).
 PASTA = Path(__file__).parent
 CAMINHO_LIVROS = PASTA / "livros.csv"
+CAMINHO_FAVORITOS = PASTA / "favoritos.csv"
+CAMPOS_FAVORITO = ["titulo", "preco", "categoria", "status", "comentario"]
 
 def encontrar_mais_caro(livros):
     """Devolve o livro de maior preço. O preço vem como texto ("£51.77")."""
@@ -16,6 +18,53 @@ def encontrar_mais_caro(livros):
             mais_caro = livro
     return mais_caro
 
+def salvar_favorito(livro):
+    """Acrescenta um livro no fim do arquivo de favoritos (modo "a")."""
+    arquivo_ja_existia = CAMINHO_FAVORITOS.exists()
+    with open(CAMINHO_FAVORITOS, "a", encoding="utf-8", newline="") as arquivo:
+        escritor = csv.DictWriter(arquivo, fieldnames=CAMPOS_FAVORITO)
+        if not arquivo_ja_existia:
+            escritor.writeheader()
+        escritor.writerow({
+            "titulo": livro["titulo"],
+            "preco": livro["preco"],
+            "categoria": livro["categoria"],
+            "status": "Quero ler",
+            "comentario": "",
+        })
+
+
+def carregar_favoritos():
+    """Lê os favoritos e devolve um dicionário: {titulo: dados do favorito}."""
+    favoritos = {}
+    try:
+        with open(CAMINHO_FAVORITOS, encoding="utf-8", newline="") as arquivo:
+            leitor = csv.DictReader(arquivo)
+            for linha in leitor:
+                favoritos[linha["titulo"]] = {
+                    "preco": float(linha["preco"]),
+                    "categoria": linha["categoria"],
+                    "status": linha["status"],
+                    "comentario": linha["comentario"],
+                }
+    except FileNotFoundError:
+        pass
+    return favoritos
+
+def gravar_favoritos(favoritos):
+    """Reescreve o arquivo inteiro com os favoritos do dicionário (modo "w")."""
+    with open(CAMINHO_FAVORITOS, "w", encoding="utf-8", newline="") as arquivo:
+        escritor = csv.DictWriter(arquivo, fieldnames=CAMPOS_FAVORITO)
+        escritor.writeheader()
+        for titulo, favorito in favoritos.items():
+            escritor.writerow({
+                "titulo": titulo,
+                "preco": favorito["preco"],
+                "categoria": favorito["categoria"],
+                "status": favorito["status"],
+                "comentario": favorito["comentario"],
+            })
+    
 
 def ler_livros(caminho=CAMINHO_LIVROS):
     """Lê o CSV de livros e devolve uma lista de dicionários.
